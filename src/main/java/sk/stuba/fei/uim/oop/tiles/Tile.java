@@ -1,8 +1,8 @@
-package sk.stuba.fei.uim.oop.pipesandtiles;
-import lombok.Generated;
+package sk.stuba.fei.uim.oop.tiles;
 import lombok.Getter;
 import  lombok.Setter;
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import java.awt.*;
 
 public class Tile extends JPanel {
@@ -16,7 +16,7 @@ public class Tile extends JPanel {
 
     public Tile(){
         this.state = false;
-        this.setBorder(BorderFactory.createLineBorder(Color.BLACK,1,true));
+        this.setBorder(new BevelBorder(BevelBorder.LOWERED));
         this.setBackground(new Color(150,180,160));
     }
 }

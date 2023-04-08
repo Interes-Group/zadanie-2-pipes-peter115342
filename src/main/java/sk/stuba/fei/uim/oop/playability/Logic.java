@@ -4,6 +4,7 @@ import lombok.Getter;
 import sk.stuba.fei.uim.oop.board.Board;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
@@ -69,6 +70,14 @@ public class Logic extends UniversalAdapter {
                 this.game.dispose();
         }
     }
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        this.currentSize = ((JSlider) e.getSource()).getValue();
+        this.updateBoardSizeLabel();
+        this.restart();
+        this.game.setFocusable(true);
+        this.game.requestFocus();
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -78,5 +87,7 @@ public class Logic extends UniversalAdapter {
         this.game.setFocusable(true);
         this.game.requestFocus();
     }
+
+
 
 }

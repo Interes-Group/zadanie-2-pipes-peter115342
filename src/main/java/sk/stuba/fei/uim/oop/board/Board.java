@@ -1,6 +1,6 @@
 package sk.stuba.fei.uim.oop.board;
 
-import sk.stuba.fei.uim.oop.pipesandtiles.Tile;
+import sk.stuba.fei.uim.oop.tiles.Tile;
 
 import javax.swing.*;
 import java.awt.*;
