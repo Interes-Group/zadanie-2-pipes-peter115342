@@ -13,8 +13,6 @@ public class Board extends JPanel {
         this.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
         this.setBackground(new Color(150,150,150));
 
-
-
     }
 
     private void initializeBoard(int dimension) {

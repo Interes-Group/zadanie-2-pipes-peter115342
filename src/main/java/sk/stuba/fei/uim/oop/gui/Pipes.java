@@ -11,7 +11,7 @@ public class Pipes {
         public Pipes(){
                 JFrame frame = new JFrame("Pipes");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.setSize(675,650);
+                frame.setSize(775,650);
                 frame.getContentPane().setBackground(new Color(150,150,150));
                 frame.setResizable(false);
                 frame.setFocusable(true);
@@ -33,10 +33,10 @@ public class Pipes {
                 routeButton.setFocusable(false);
 
 
-                JSlider slider = new JSlider(JSlider.HORIZONTAL, 8, 16 , 8);
+                JSlider slider = new JSlider(JSlider.HORIZONTAL, 8, 12 , 8);
                 slider.setPreferredSize(new Dimension(350,40));
-                slider.setMinorTickSpacing(2);
-                slider.setMajorTickSpacing(2);
+                slider.setMinorTickSpacing(1);
+                slider.setMajorTickSpacing(1);
                 slider.setSnapToTicks(true);
                 slider.setPaintTicks(true);
                 slider.setPaintLabels(true);

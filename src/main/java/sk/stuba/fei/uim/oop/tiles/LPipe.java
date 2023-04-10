@@ -1,4 +1,6 @@
 package sk.stuba.fei.uim.oop.tiles;
 
-public class LPipe {
+import javax.swing.*;
+
+public class LPipe extends JPanel  {
 }
