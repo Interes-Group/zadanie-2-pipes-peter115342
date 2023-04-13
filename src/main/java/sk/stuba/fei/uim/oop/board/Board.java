@@ -1,17 +1,25 @@
 package sk.stuba.fei.uim.oop.board;
 
 import sk.stuba.fei.uim.oop.tiles.Tile;
+import sk.stuba.fei.uim.oop.tiles.Type;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
+import java.awt.event.MouseEvent;
+
 
 public class Board extends JPanel {
     private Tile[][] board;
 
-    public Board(int size){
+    public Board(int size) {
         this.initializeBoard(size);
         this.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
-        this.setBackground(new Color(150,150,150));
+        this.setBackground(new Color(150, 150, 150));
+
+    }
+
+    public void generatePath() {
 
     }
 
@@ -26,5 +34,7 @@ public class Board extends JPanel {
         }
 
     }
+
+
 
 }

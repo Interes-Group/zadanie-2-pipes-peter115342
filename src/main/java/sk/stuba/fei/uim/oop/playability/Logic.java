@@ -2,11 +2,17 @@ package sk.stuba.fei.uim.oop.playability;
 
 import lombok.Getter;
 import sk.stuba.fei.uim.oop.board.Board;
+import sk.stuba.fei.uim.oop.gui.Pipes;
+import sk.stuba.fei.uim.oop.tiles.*;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Comparator;
 
 public class Logic extends UniversalAdapter {
     public static final int STARTING_SIZE = 8;
@@ -57,6 +63,7 @@ public class Logic extends UniversalAdapter {
         this.game.remove(this.currBoard);
         this.createNewBoard(this.currentSize);
         this.game.add(this.currBoard);
+        this.updateLevelLabel();
     }
 
     @Override
@@ -81,13 +88,44 @@ public class Logic extends UniversalAdapter {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        this.restart();
-        this.game.revalidate();
-        this.game.repaint();
-        this.game.setFocusable(true);
-        this.game.requestFocus();
+        switch (e.getActionCommand()){
+            case(Pipes.RESET_BUTTON_NAME):
+                this.restart();
+                this.game.revalidate();
+                this.game.repaint();
+                break;
+            case(Pipes.CHECK_BUTTON_NAME):
+                //TODO
+                break;
+
+            default:
+                break;
+        }
+
+
+
     }
 
+    @Override
+    public void mousePressed(MouseEvent e) {
+        Component current = this.currBoard.getComponentAt(e.getX(), e.getY());
+        if (!(current instanceof Tile && !(((Tile) current).getState().equals(Type.EMPTY)))) {
+            return;
+        }
+        ((Tile) current).setClicked(true);
+
+        this.currBoard.repaint();
+    }
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        Component current = this.currBoard.getComponentAt(e.getX(), e.getY());
+        if (!(current instanceof Tile)) {
+            return;
+        }
+
+            ((Tile) current).setHighlight(true);
+       this.currBoard.repaint();
+    }
 
 
 }
