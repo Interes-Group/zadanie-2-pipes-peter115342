@@ -13,6 +13,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Random;
+import java.util.Stack;
 
 public class Logic extends UniversalAdapter {
     public static final int STARTING_SIZE = 8;
@@ -29,6 +31,7 @@ public class Logic extends UniversalAdapter {
 
     private int currentSize;
 
+    private Random rand = new Random();
 
     public Logic(JFrame game){
     this.game = game;
@@ -126,6 +129,8 @@ public class Logic extends UniversalAdapter {
             ((Tile) current).setHighlight(true);
        this.currBoard.repaint();
     }
+
+
 
 
 }

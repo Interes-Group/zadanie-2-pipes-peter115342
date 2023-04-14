@@ -4,11 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.Random;
-import java.awt.event.MouseEvent;
 
 
 public class Tile extends JPanel {
@@ -25,20 +23,25 @@ public class Tile extends JPanel {
     @Setter
     private int rotation;
 
-    Random rand = new Random();
+    @Getter
+    private Random rand = new Random();
 
 
     public Tile() {
         this.state = Type.EMPTY;
-        if (rand.nextInt(4) == 0) {
+        /*
+        if (rand.nextInt(5) == 0) {
             this.state = Type.EMPTY;
-        } else if ((rand.nextInt(4) == 1)) {
-            this.state = Type.END;
-        } else if ((rand.nextInt(4) == 2)) {
+        } else if ((rand.nextInt(5) == 1)) {
+            this.state = Type.START;
+        } else if ((rand.nextInt(5) == 2)) {
             this.state = Type.L;
-        } else if ((rand.nextInt(4) == 3)) {
+        } else if ((rand.nextInt(5) == 3)) {
             this.state = Type.I;
         }
+        else if ((rand.nextInt(5) == 4)) {
+            this.state = Type.FINISH;
+        }*/
         this.setRotation(90);
 
         //this.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -52,11 +55,30 @@ public class Tile extends JPanel {
 
         g.setColor(new Color(0, 120, 70));
 
-        if (this.state.equals(Type.END)) {
-            g.fillRect( (0), (int) (this.getHeight() * 0.2),
-                    (int) (this.getWidth() * 0.55), (int) (this.getHeight() * 0.6));
+        if (this.state.equals(Type.START)) {
+            g.setColor(new Color(0, 255, 0));
 
-        } else if (this.state.equals(Type.L)) {
+            g.fillRect( (0), (int) (0),
+                    (int) (this.getWidth()), (int) (this.getHeight()));
+           // g.setColor(new Color(0,0,0));
+           // g.drawString("START", (int) (this.getWidth()*0.2), (int) (this.getHeight()*0.5));
+            g.setColor(new Color(0, 120, 70));
+
+
+        } else if (this.state.equals(Type.FINISH)) {
+            int size = Math.min(this.getWidth()+14, (this.getHeight())+14) / 6;
+            for (int i = 0; i < 6; i++) {
+                for (int j = 0; j < 6; j++) {
+                    if ((i + j) % 2 == 0) {
+                        g.setColor(Color.BLACK);
+                    } else {
+                        g.setColor(Color.WHITE);
+                    }
+                    g.fillRect(i * size, j * size, size, size);
+                }
+            }
+        }
+        else if (this.state.equals(Type.L)) {
             g.fillRect((int) (0 + this.getWidth() * 0.4),  (0),
                     (int) (this.getWidth() * 0.2), (int) (this.getHeight() * 0.59));
             g.fillRect( (0), (int) (0 + this.getHeight() * 0.4),
@@ -71,7 +93,7 @@ public class Tile extends JPanel {
 
         if (this.highlight) {
             g.setColor(new Color(255, 0, 0));
-            this.setBorder(BorderFactory.createLineBorder(Color.red));
+            this.setBorder(BorderFactory.createLineBorder(Color.red,3));
 
             this.highlight = false;
         } else {
@@ -79,10 +101,8 @@ public class Tile extends JPanel {
         }
         if(this.clicked){
             rotation +=90;
-            g.setColor(new Color(255, 0, 0));
-            this.setBorder(BorderFactory.createLineBorder(Color.red));
+            this.setBorder(BorderFactory.createLineBorder(Color.red,3));
 
-            this.highlight = false;
             this.clicked = false;
         }
 
