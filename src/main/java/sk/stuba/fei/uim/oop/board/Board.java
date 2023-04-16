@@ -6,7 +6,6 @@ import sk.stuba.fei.uim.oop.tiles.Type;
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
-import java.awt.event.MouseEvent;
 
 
 public class Board extends JPanel {
@@ -33,54 +32,58 @@ public class Board extends JPanel {
                 this.add(this.board[i][j]);
             }
         }
-        int startX = 0;
-        int startY = rand.nextInt(dimension);
+
         int[][] tempArray = new int[dimension][dimension];
-        board[startX][startY].setState(Type.START);
-        int endX = dimension - 1;
-        int endY = rand.nextInt(dimension);
-        board[endX][endY].setState(Type.FINISH);
+        int startX = 0;
+        int startY = 0;
+        int endX = dimension-1;
+        int endY = dimension-1;
+        if(rand.nextInt(2)==0){
+            startY =rand.nextInt(dimension);
+            board[startX][startY].setState(Type.START);
+             endY = rand.nextInt(dimension);
+            board[endX][endY].setState(Type.FINISH);
+        }
+        else{
+            startX = rand.nextInt(dimension);
+            board[startX][startY].setState(Type.START);
+             endX =rand.nextInt(dimension);
+            board[endX][endY].setState(Type.FINISH);
+        }
 
         Stack<Integer> stack = new Stack<>();
         stack.push(startX);
         stack.push(startY);
 
-        // DFS algorithm to generate random path
         while (!stack.isEmpty()) {
             int currentY = stack.pop();
             int currentX = stack.pop();
 
-            // check if we have reached the end point
             if (currentX == endX && currentY == endY) {
                 break;
             }
 
-            // check unvisited neighboring positions
-            if (currentX > 0 && tempArray[currentX - 1][currentY] == 0) {
-                // move up
-                tempArray[currentX - 1][currentY] = 1;
-                stack.push(currentX - 1);
-                stack.push(currentY);
-            }
-            if (currentY < dimension - 1 && tempArray[currentX][currentY + 1] == 0) {
-                // move right
-                tempArray[currentX][currentY + 1] = 1;
-                stack.push(currentX);
-                stack.push(currentY + 1);
-            }
-            if (currentX < dimension - 1 && tempArray[currentX + 1][currentY] == 0) {
-                // move down
-                tempArray[currentX + 1][currentY] = 1;
-                stack.push(currentX + 1);
-                stack.push(currentY);
-            }
-            if (currentY > 0 && tempArray[currentX][currentY - 1] == 0) {
-                // move left
-                tempArray[currentX][currentY - 1] = 1;
-                stack.push(currentX);
-                stack.push(currentY - 1);
+
+            int[] neighbors = unvisitedNeighbors(tempArray,currentX, currentY,dimension );
+            while (neighbors.length > 0) {
+                int randomNeighbor = neighbors[rand.nextInt(neighbors.length)];
+                int nextX = currentX + dx(randomNeighbor);
+                int nextY = currentY + dy(randomNeighbor);
+
+                tempArray[nextX][nextY] = 1;
+                tempArray[currentX][currentY] = 2;
+                stack.push(nextX);
+                stack.push(nextY);
+
+                if (nextX == endX && nextY == endY) {
+                    break;
+                }
+
+                neighbors = unvisitedNeighbors(tempArray,currentX, currentY,dimension);
             }
         }
+        tempArray[startX][startY] = 1;
+        tempArray[endX][endY] = 1;
 
         for (int i = 0; i < dimension; i++) {
             for (int j = 0; j < dimension; j++) {
@@ -88,7 +91,7 @@ public class Board extends JPanel {
                     board[i][j].setState(Type.START);
                 } else if (i == endX && j == endY) {
                     board[i][j].setState(Type.FINISH);
-                } else if (tempArray[i][j] == 1) {
+                } else if (tempArray[i][j] == 2) {/*
                     if((j > 1 && i  < dimension-1) &&(i > 1 && j  < dimension-1) ) {
                             if (tempArray[i + 1][j - 1] == 1 || tempArray[i-1][j + 1] == 1 ) {
                             board[i][j].setState(Type.L);
@@ -109,6 +112,8 @@ public class Board extends JPanel {
                     else {
                         board[i][j].setState(Type.I);
                     }
+               */
+                board[i][j].setState(Type.I);
                 }  else {
                     board[i][j].setState(Type.EMPTY);
                 }
@@ -118,6 +123,42 @@ public class Board extends JPanel {
 
 
     }
+    private  int[] unvisitedNeighbors(int[][] array, int x, int y,int dimension) {
+        int[] neighbors = new int[4];
+        int count = 0;
+        if (x > 1 && array[x-1][y] == 0) {
+            neighbors[count++] = 0;
+        }
+        if (y < dimension-1 && array[x][y+1] == 0) {
+            neighbors[count++] = 1;
+        }
+        if (x < dimension-1 && array[x+1][y] == 0) {
+            neighbors[count++] = 2;
+        }
+        if (y > 1 && array[x][y-1] == 0) {
+            neighbors[count++] = 3;
+        }
+        int[] result = new int[count];
+        System.arraycopy(neighbors, 0, result, 0, count);
+        return result;
+    }
+    private  int dx(int direction) {
+        if (direction == 0) {
+            return -1;
+        } else if (direction == 2) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
 
-
+    private  int dy(int direction) {
+        if (direction == 1) {
+            return 1;
+        } else if (direction == 3) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
 }
