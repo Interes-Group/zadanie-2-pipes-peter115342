@@ -56,6 +56,7 @@ public class Board extends JPanel {
         stack.push(startY);
 
         while (!stack.isEmpty()) {
+
             int currentY = stack.pop();
             int currentX = stack.pop();
 
@@ -67,6 +68,7 @@ public class Board extends JPanel {
             int[] neighbors = unvisitedNeighbors(tempArray,currentX, currentY,dimension );
             while (neighbors.length > 0) {
                 int randomNeighbor = neighbors[rand.nextInt(neighbors.length)];
+
                 int nextX = currentX + dx(randomNeighbor);
                 int nextY = currentY + dy(randomNeighbor);
 
@@ -80,40 +82,28 @@ public class Board extends JPanel {
                 }
 
                 neighbors = unvisitedNeighbors(tempArray,currentX, currentY,dimension);
+
             }
         }
-        tempArray[startX][startY] = 1;
-        tempArray[endX][endY] = 1;
+        tempArray[startX][startY] = 2;
+        tempArray[endX][endY] = 2;
 
-        for (int i = 0; i < dimension; i++) {
+        for (int i = 0; i    < dimension; i++) {
             for (int j = 0; j < dimension; j++) {
                 if (i == startX && j == startY) {
                     board[i][j].setState(Type.START);
                 } else if (i == endX && j == endY) {
                     board[i][j].setState(Type.FINISH);
-                } else if (tempArray[i][j] == 2) {/*
-                    if((j > 1 && i  < dimension-1) &&(i > 1 && j  < dimension-1) ) {
-                            if (tempArray[i + 1][j - 1] == 1 || tempArray[i-1][j + 1] == 1 ) {
-                            board[i][j].setState(Type.L);
-                        }
+                } else if (tempArray[i][j] == 2 && !board[i][j].getState().equals(Type.START) && !board[i][j].getState().equals(Type.FINISH)) {
 
-                    }
-                    else if(j == 0 && i == dimension - 1 ){
-                        if (tempArray[0][j + 1] == 1) {
-                            board[i][j].setState(Type.L);
-                        }
-                    }
-                    else if( i == 0 && j ==dimension-1){
-                        if(tempArray[i+1][0] == 1){
+                        if ((findNeighborsX(tempArray,i,j,dimension)) || (findNeighborsY(tempArray,i,j,dimension))){
+                            board[i][j].setState(Type.I);
+
+                        } else {
                             board[i][j].setState(Type.L);
 
                         }
-                    }
-                    else {
-                        board[i][j].setState(Type.I);
-                    }
-               */
-                board[i][j].setState(Type.I);
+
                 }  else {
                     board[i][j].setState(Type.EMPTY);
                 }
@@ -142,6 +132,20 @@ public class Board extends JPanel {
         System.arraycopy(neighbors, 0, result, 0, count);
         return result;
     }
+
+    private boolean findNeighborsX(int[][] array,int x,int y,int dimension){
+        if( x  > 1 && x < dimension-1) {
+            return array[x + 1][y] == 2 && array[x - 1][y] == 2;
+        }
+        return  false;
+    }
+    private boolean findNeighborsY(int[][] array,int x,int y,int dimension){
+        if( y  > 1 && y < dimension-1) {
+            return array[x][y + 1] == 2 && array[x][y - 1] == 2;
+        }
+        return false;
+    }
+
     private  int dx(int direction) {
         if (direction == 0) {
             return -1;
