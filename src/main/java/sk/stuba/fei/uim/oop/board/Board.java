@@ -14,7 +14,7 @@ public class Board extends JPanel {
 
     public Board(int size) {
         this.initializeBoard(size);
-        this.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
+       // this.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
         this.setBackground(new Color(150, 150, 150));
 
     }
@@ -41,13 +41,13 @@ public class Board extends JPanel {
         if(rand.nextInt(2)==0){
             startY =rand.nextInt(dimension);
             board[startX][startY].setState(Type.START);
-             endY = rand.nextInt(dimension);
+            endY = rand.nextInt(dimension);
             board[endX][endY].setState(Type.FINISH);
         }
         else{
             startX = rand.nextInt(dimension);
             board[startX][startY].setState(Type.START);
-             endX =rand.nextInt(dimension);
+            endX =rand.nextInt(dimension);
             board[endX][endY].setState(Type.FINISH);
         }
 
@@ -96,13 +96,13 @@ public class Board extends JPanel {
                     board[i][j].setState(Type.FINISH);
                 } else if (tempArray[i][j] == 2 && !board[i][j].getState().equals(Type.START) && !board[i][j].getState().equals(Type.FINISH)) {
 
-                        if ((findNeighborsX(tempArray,i,j,dimension)) || (findNeighborsY(tempArray,i,j,dimension))){
-                            board[i][j].setState(Type.I);
+                    if ((!findNeighborsX(tempArray,i,j,dimension)) && (findNeighborsY(tempArray,i,j,dimension)) ||(findNeighborsX(tempArray,i,j,dimension)) && (!findNeighborsY(tempArray,i,j,dimension))){
+                        board[i][j].setState(Type.I);
 
-                        } else {
-                            board[i][j].setState(Type.L);
+                    } else {
+                        board[i][j].setState(Type.L);
 
-                        }
+                    }
 
                 }  else {
                     board[i][j].setState(Type.EMPTY);

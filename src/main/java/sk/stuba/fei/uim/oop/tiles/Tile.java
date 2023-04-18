@@ -25,26 +25,14 @@ public class Tile extends JPanel {
 
     @Getter
     private Random rand = new Random();
-
-
+    @Getter
+    private Boolean wasRotated;
     public Tile() {
         this.state = Type.EMPTY;
-        /*
-        if (rand.nextInt(5) == 0) {
-            this.state = Type.EMPTY;
-        } else if ((rand.nextInt(5) == 1)) {
-            this.state = Type.START;
-        } else if ((rand.nextInt(5) == 2)) {
-            this.state = Type.L;
-        } else if ((rand.nextInt(5) == 3)) {
-            this.state = Type.I;
-        }
-        else if ((rand.nextInt(5) == 4)) {
-            this.state = Type.FINISH;
-        }*/
+        this.wasRotated = false;
         this.setRotation(90);
 
-        //this.setBorder(BorderFactory.createLineBorder(Color.black));
+      //  this.setBorder(BorderFactory.createLineBorder(Color.black));
         this.setBackground(new Color(150, 180, 160));
     }
 
@@ -52,16 +40,28 @@ public class Tile extends JPanel {
         super.paintComponent(g);
         AffineTransform rotateTransform = AffineTransform.getRotateInstance(Math.toRadians(rotation), getWidth() / 2, getHeight() / 2);
         ((Graphics2D)g).transform(rotateTransform);
+        if(!this.wasRotated){
 
+            if( rand.nextInt(4)==1){
+                rotation+=90;
+            }
+            if( rand.nextInt(4)==2){
+                rotation+=180;
+
+            }
+            if( rand.nextInt(4)==3){
+                rotation+=270;
+            }
+            wasRotated=true;
+        }
         g.setColor(new Color(0, 120, 70));
 
         if (this.state.equals(Type.START)) {
             g.setColor(new Color(0, 255, 0));
 
             g.fillRect( (0), (int) (0),
-                    (int) (this.getWidth()), (int) (this.getHeight()));
-           // g.setColor(new Color(0,0,0));
-           // g.drawString("START", (int) (this.getWidth()*0.2), (int) (this.getHeight()*0.5));
+                    this.getWidth(), this.getHeight());
+
             g.setColor(new Color(0, 120, 70));
 
 
@@ -91,6 +91,7 @@ public class Tile extends JPanel {
         ((Graphics2D) g).setStroke(new BasicStroke(6));
         ((Graphics2D)g).setTransform(new AffineTransform());
 
+
         if (this.highlight) {
             g.setColor(new Color(255, 0, 0));
             this.setBorder(BorderFactory.createLineBorder(Color.red,3));
@@ -112,5 +113,7 @@ public class Tile extends JPanel {
 
 
     }
+
+
 
 }

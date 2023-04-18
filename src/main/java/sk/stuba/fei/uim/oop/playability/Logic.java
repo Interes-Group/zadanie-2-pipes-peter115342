@@ -67,6 +67,8 @@ public class Logic extends UniversalAdapter {
         this.createNewBoard(this.currentSize);
         this.game.add(this.currBoard);
         this.updateLevelLabel();
+        this.currBoard.repaint();
+        this.currBoard.revalidate();
     }
 
     @Override
@@ -94,8 +96,6 @@ public class Logic extends UniversalAdapter {
         switch (e.getActionCommand()){
             case(Pipes.RESET_BUTTON_NAME):
                 this.restart();
-                this.game.revalidate();
-                this.game.repaint();
                 break;
             case(Pipes.CHECK_BUTTON_NAME):
                 //TODO
