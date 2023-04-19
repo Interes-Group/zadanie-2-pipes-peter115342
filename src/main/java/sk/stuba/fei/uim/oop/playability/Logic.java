@@ -11,10 +11,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Random;
-import java.util.Stack;
 
 public class Logic extends UniversalAdapter {
     public static final int STARTING_SIZE = 8;
@@ -49,6 +46,7 @@ public class Logic extends UniversalAdapter {
         this.currBoard = new Board(dimension);
         this.currBoard.addMouseMotionListener(this);
         this.currBoard.addMouseListener(this);
+        this.currBoard.revalidate();
     }
 
     private void updateBoardSizeLabel() {
@@ -112,7 +110,7 @@ public class Logic extends UniversalAdapter {
     @Override
     public void mousePressed(MouseEvent e) {
         Component current = this.currBoard.getComponentAt(e.getX(), e.getY());
-        if (!(current instanceof Tile && !(((Tile) current).getState().equals(Type.EMPTY)))) {
+        if (!(current instanceof Tile && !(((Tile) current).getType().equals(Type.EMPTY)))) {
             return;
         }
         ((Tile) current).setClicked(true);
@@ -123,6 +121,7 @@ public class Logic extends UniversalAdapter {
     public void mouseMoved(MouseEvent e) {
         Component current = this.currBoard.getComponentAt(e.getX(), e.getY());
         if (!(current instanceof Tile)) {
+            this.currBoard.repaint();
             return;
         }
 
