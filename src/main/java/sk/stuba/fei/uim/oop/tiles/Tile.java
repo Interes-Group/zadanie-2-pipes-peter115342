@@ -36,7 +36,18 @@ public class Tile extends JPanel {
         this.wasRotated = false;
         this.setRotate(90);
         rand = new Random();
+        if(!this.type.equals(Type.EMPTY)) {
+            if (this.type.equals(Type.I)) {
+                this.rotation = Rotation.LEFT_RIGHT;
+            } else if (this.type.equals(Type.L)) {
+                this.rotation = Rotation.UP_RIGHT;
+            } else if (this.type.equals(Type.END)) {
+                this.rotation = Rotation.LEFT;
+            } else if (this.type.equals(Type.START)) {
+                this.rotation = Rotation.LEFT;
 
+            }
+        }
       //  this.setBorder(BorderFactory.createLineBorder(Color.black));
         this.setBackground(new Color(150, 180, 160));
     }
@@ -48,9 +59,19 @@ public class Tile extends JPanel {
         if(!this.wasRotated){
 
             if( rand.nextInt(4)==1){
-
                 rotate +=90;
-              //  this.rotation;
+                if(!this.type.equals(Type.EMPTY)) {
+                    if (this.type.equals(Type.I)) {
+                        this.rotation = Rotation.UP_DOWN;
+                    } else if (this.type.equals(Type.L)) {
+                        this.rotation = Rotation.RIGHT_DOWN;
+
+                    } else if (this.type.equals(Type.END)) {
+
+                    } else if (this.type.equals(Type.START)) {
+
+                    }
+                }
             }
             if( rand.nextInt(4)==2){
                 rotate +=180;
@@ -66,24 +87,25 @@ public class Tile extends JPanel {
         if (this.type.equals(Type.START)) {
             g.setColor(new Color(0, 255, 0));
 
-            g.fillRect( (0), (int) (0),
-                    this.getWidth(), this.getHeight());
+            g.fillRect( (0),  (0), (this.getWidth()),  (this.getHeight()));
+            g.setColor(new Color(0, 120, 70));
 
+            g.fillRect((int) (this.getWidth() * 0.4), (int) (this.getWidth() * 0.4),
+                    (int) (this.getWidth() * 0.2),  (this.getHeight()));
             g.setColor(new Color(0, 120, 70));
 
 
-        } else if (this.type.equals(Type.FINISH)) {
-            int size = Math.min(this.getWidth()+14, (this.getHeight())+14) / 6;
-            for (int i = 0; i < 6; i++) {
-                for (int j = 0; j < 6; j++) {
-                    if ((i + j) % 2 == 0) {
-                        g.setColor(Color.BLACK);
-                    } else {
-                        g.setColor(Color.WHITE);
-                    }
-                    g.fillRect(i * size, j * size, size, size);
-                }
-            }
+        } else if (this.type.equals(Type.END)) {
+            g.setColor(new Color(200, 120, 70));
+
+            g.fillRect( (0),  (0),
+                    (this.getWidth()),  (this.getHeight()));
+            g.setColor(new Color(0, 120, 70));
+
+            g.fillRect((int) (this.getWidth() * 0.4), (int) (this.getWidth() * 0.4),
+                    (int) (this.getWidth() * 0.2),  (this.getHeight()));
+            g.setColor(new Color(0, 120, 70));
+
         }
         else if (this.type.equals(Type.L)) {
             g.fillRect((int) (0 + this.getWidth() * 0.4),  (0),
@@ -113,7 +135,7 @@ public class Tile extends JPanel {
 
                 } else if (this.type.equals(Type.L)) {
 
-                } else if (this.type.equals(Type.FINISH)) {
+                } else if (this.type.equals(Type.END)) {
 
                 } else if (this.type.equals(Type.START)) {
 
@@ -125,6 +147,26 @@ public class Tile extends JPanel {
             this.clicked = false;
         }
     }
+
+
+    private void  rotatePipe(){
+        if(!this.type.equals(Type.EMPTY)) {
+            if (this.type.equals(Type.I)) {
+                this.rotation = Rotation.UP_DOWN;
+            } else if (this.type.equals(Type.L)) {
+                this.rotation = Rotation.RIGHT_DOWN;
+
+            } else if (this.type.equals(Type.END)) {
+                this.rotation = Rotation.UP;
+
+
+            } else if (this.type.equals(Type.START)) {
+                 this.rotation = Rotation.UP;
+            }
+        }
+
+    }
+
 
 
 

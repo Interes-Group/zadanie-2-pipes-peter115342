@@ -5,14 +5,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class DFSRandomPath {
+public class DfsRandomPath {
     private boolean[][] visited;
     private int startRow, startCol, endRow, endCol;
     private int numRows, numCols;
     private Random random;
 
 
-    public DFSRandomPath(int numRows, int numCols, int startRow, int startCol, int endRow, int endCol) {
+    public DfsRandomPath(int numRows, int numCols, int startRow, int startCol, int endRow, int endCol) {
         this.startRow = startRow;
         this.startCol = startCol;
         this.endRow = endRow;
@@ -44,14 +44,14 @@ public class DFSRandomPath {
             return false;
         }
 
-        Collections.shuffle(neighbors, random);
-
         neighbors.sort((n1, n2) -> {
             int dist1 = Math.abs(n1[0] - endRow) + Math.abs(n1[1] - endCol);
             int dist2 = Math.abs(n2[0] - endRow) + Math.abs(n2[1] - endCol);
-            Collections.shuffle(neighbors, random);
             return Integer.compare(dist1, dist2);
         });
+        Collections.shuffle(neighbors, random);
+
+
 
         for (int[] neighbor : neighbors) {
             boolean foundEnd = dfs(neighbor[0], neighbor[1], path);
@@ -67,7 +67,6 @@ public class DFSRandomPath {
     private List<int[]> getUnvisitedNeighbors(int row, int col) {
         List<int[]> neighbors = new ArrayList<>();
 
-
         for( Direction dir : Direction.values()){
             int neighborRow = row + dir.getX();
             int neighborCol = col + dir.getY();
@@ -81,8 +80,9 @@ public class DFSRandomPath {
             }
         }
 
-        Collections.shuffle(neighbors, random);
+        Collections.shuffle(neighbors, random); // shuffle the neighbors
         int numNeighbors = Math.min(3, neighbors.size());
+
         return neighbors.subList(0, numNeighbors);
     }
 }

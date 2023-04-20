@@ -15,4 +15,9 @@ public enum Rotation {
     RIGHT;
 
 
+    public void rotate(){
+
+    }
+
+
 }

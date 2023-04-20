@@ -4,6 +4,6 @@ public enum Type {
     L,
     I,
     START,
-    FINISH,
+    END,
     EMPTY
 }

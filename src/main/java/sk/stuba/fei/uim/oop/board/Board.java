@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Board extends JPanel {
     private Tile[][] board;
-    private Random rand = new Random();
+    private final Random rand = new Random();
 
     public Board(int size) {
         this.initializeBoard(size);
@@ -36,59 +36,41 @@ public class Board extends JPanel {
             startY =rand.nextInt(dimension);
             board[startX][startY].setType(Type.START);
             endY = rand.nextInt(dimension);
-            board[endX][endY].setType(Type.FINISH);
+            board[endX][endY].setType(Type.END);
         }
         else{
             startX = rand.nextInt(dimension);
             board[startX][startY].setType(Type.START);
             endX =rand.nextInt(dimension);
-            board[endX][endY].setType(Type.FINISH);
+            board[endX][endY].setType(Type.END);
         }
-        DFSRandomPath pathFinder = new DFSRandomPath(dimension,dimension,startX,startY,endX,endY);
+        DfsRandomPath pathFinder = new DfsRandomPath(dimension,dimension,startX,startY,endX,endY);
         List<int[]> path = pathFinder.findPath();
-        int[][] tempArray = new int[dimension][dimension];
+        path.forEach(pth -> System.out.println(Arrays.toString(pth)));
 
-        path.forEach(pth ->{
-            int x = pth[0];
-            int y = pth[1];
-            tempArray[x][y] = 2;
-          //  if (!board[x][y].getState().equals(Type.START) && !board[x][y].getState().equals(Type.FINISH) ){
-               // board[x][y].setState(Type.I);// }
-        } );
 
-        for (int i = 0; i    < dimension; i++) {
-            for (int j = 0; j < dimension; j++) {
-                if (i == startX && j == startY) {
-                    board[i][j].setType(Type.START);
-                } else if (i == endX && j == endY) {
-                    board[i][j].setType(Type.FINISH);
-                } else if (tempArray[i][j] == 2 && !board[i][j].getType().equals(Type.START) && !board[i][j].getType().equals(Type.FINISH)) {
-
-                    if ((!findNeighborsX(tempArray, i, j, dimension)) && (findNeighborsY(tempArray, i, j, dimension)) || (findNeighborsX(tempArray, i, j, dimension)) && (!findNeighborsY(tempArray, i, j, dimension))) {
-                        board[i][j].setType(Type.I);
-
-                    } else {
-                        board[i][j].setType(Type.L);
-
-                    }
-
-                } else {
-                    board[i][j].setType(Type.EMPTY);
+        for (int i = 0; i < path.size(); i++) {
+            int x = path.get(i)[0];
+            int y = path.get(i)[1];
+              if ((i > 1  && i < path.size()-1)) {
+                int nextX = path.get(i + 1)[0];
+                int nextY = path.get(i + 1)[1];
+                  int prevX = path.get(i - 1)[0];
+                  int prevY = path.get(i -1)[1];
+                  //System.out.println("Previous: "+prevX+", "+ prevY+" | Path: "+x +", "+ y+" | Next: "+ nextX+", "+ nextY);
+                if ((prevX == nextX || prevY == nextY)) {
+                    board[x][y].setType(Type.I);
                 }
-            }
-        }
-   }
-    private boolean findNeighborsX(int[][] array,int x,int y,int dimension){
-        if( x  > 1 && x < dimension-1) {
-            return array[x + 1][y] == 2 && array[x - 1][y] == 2;
-        }
-        return  false;
-    }
-    private boolean findNeighborsY(int[][] array,int x,int y,int dimension){
-        if( y  > 1 && y < dimension-1) {
-            return array[x][y + 1] == 2 && array[x][y - 1] == 2;
-        }
-        return false;
-    }
+                else {
+                    board[x][y].setType(Type.L);
 
+                }
+            } else {
+                  board[x][y].setType(Type.L);
+              }
+        }
+        board[startX][startY].setType(Type.START);
+        board[endX][endY].setType(Type.END);
+
+    }
 }
