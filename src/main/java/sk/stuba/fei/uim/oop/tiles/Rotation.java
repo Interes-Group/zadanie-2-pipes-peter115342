@@ -1,11 +1,10 @@
-package sk.stuba.fei.uim.oop.board;
+package sk.stuba.fei.uim.oop.tiles;
 
 public enum Rotation {
 
     UP_DOWN,
-
     LEFT_RIGHT,
-    UP_RIGHT,
+    RIGHT_UP,
     RIGHT_DOWN,
     LEFT_DOWN,
     LEFT_UP,
@@ -13,11 +12,5 @@ public enum Rotation {
     DOWN,
     LEFT,
     RIGHT;
-
-
-    public void rotate(){
-
-    }
-
 
 }

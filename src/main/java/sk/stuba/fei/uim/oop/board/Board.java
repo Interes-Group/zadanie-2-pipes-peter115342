@@ -1,24 +1,34 @@
 package sk.stuba.fei.uim.oop.board;
 
+import lombok.Getter;
+import sk.stuba.fei.uim.oop.tiles.Rotation;
 import sk.stuba.fei.uim.oop.tiles.Tile;
 import sk.stuba.fei.uim.oop.tiles.Type;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 
 public class Board extends JPanel {
     private Tile[][] board;
-    private final Random rand = new Random();
+    @Getter
+    private boolean winFlag;
+    @Getter
+    private Node start;
+    @Getter
+    private Node end;
 
     public Board(int size) {
         this.initializeBoard(size);
         this.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
         this.setBackground(new Color(150, 150, 150));
+        winFlag = false;
 
     }
+
     private void initializeBoard(int dimension) {
         this.board = new Tile[dimension][dimension];
         this.setLayout(new GridLayout(dimension, dimension));
@@ -27,50 +37,98 @@ public class Board extends JPanel {
                 this.board[i][j] = new Tile();
                 this.add(this.board[i][j]);
             }
-            }
+        }
+
         int startX = 0;
         int startY = 0;
-        int endX = dimension-1;
-        int endY = dimension-1;
-        if(rand.nextInt(2)==0){
-            startY =rand.nextInt(dimension);
-            board[startX][startY].setType(Type.START);
-            endY = rand.nextInt(dimension);
+        int endX = dimension - 1;
+        int endY = dimension - 1;
+        if (board[0][0].getRand().nextInt(2) == 0) {
+            startY = board[0][0].getRand().nextInt(dimension);
+            endY = board[0][0].getRand().nextInt(dimension);
             board[endX][endY].setType(Type.END);
-        }
-        else{
-            startX = rand.nextInt(dimension);
+        } else {
+            startX = board[0][0].getRand().nextInt(dimension);
             board[startX][startY].setType(Type.START);
-            endX =rand.nextInt(dimension);
-            board[endX][endY].setType(Type.END);
+            endX = board[0][0].getRand().nextInt(dimension);
         }
-        DfsRandomPath pathFinder = new DfsRandomPath(dimension,dimension,startX,startY,endX,endY);
-        List<int[]> path = pathFinder.findPath();
-        path.forEach(pth -> System.out.println(Arrays.toString(pth)));
-
+        this.start = new Node(startX, startY);
+        this.end = new Node(endX, endY);
+        DfsPath pathFinder = new DfsPath(dimension, dimension, startX, startY, endX, endY);
+        List<Node> path = pathFinder.findPath();
 
         for (int i = 0; i < path.size(); i++) {
-            int x = path.get(i)[0];
-            int y = path.get(i)[1];
-              if ((i > 1  && i < path.size()-1)) {
-                int nextX = path.get(i + 1)[0];
-                int nextY = path.get(i + 1)[1];
-                  int prevX = path.get(i - 1)[0];
-                  int prevY = path.get(i -1)[1];
-                  //System.out.println("Previous: "+prevX+", "+ prevY+" | Path: "+x +", "+ y+" | Next: "+ nextX+", "+ nextY);
-                if ((prevX == nextX || prevY == nextY)) {
-                    board[x][y].setType(Type.I);
-                }
-                else {
-                    board[x][y].setType(Type.L);
-
-                }
+            Node current = path.get(i);
+            Node next = path.get(Math.min(i + 1, path.size() - 1));
+            Node prev = path.get(Math.max(0, i - 1));
+            if ((prev.getX() == next.getX() || prev.getY() == next.getY())) {
+                board[current.getX()][current.getY()].setType(Type.I);
             } else {
-                  board[x][y].setType(Type.L);
-              }
+                board[current.getX()][current.getY()].setType(Type.L);
+            }
         }
-        board[startX][startY].setType(Type.START);
-        board[endX][endY].setType(Type.END);
+        board[start.getX()][start.getY()].setType(Type.START);
+        board[end.getX()][end.getY()].setType(Type.END);
+    }
+
+
+    public boolean checkWin(Board board) {
+        List<Tile> correctPath = winPath(board.start);
+        if (correctPath.get(correctPath.size() - 1).getType().equals(Type.END)) {
+            return winFlag;
+        } else {
+            return false;
+        }
+    }
+
+    public List<Tile> winPath(Node startingNode) {
+        List<Tile> correctPath = new ArrayList<>();
+        Tile currentTile = board[startingNode.getX()][startingNode.getY()];
+        correctPath.add(currentTile);
+        Tile previousTile = new Tile();
+        Tile nextTile = new Tile();
+        System.out.println(currentTile.getAccessibleNeighbors().get(0).getX()+" "+ currentTile.getAccessibleNeighbors().get(0).getY()); ;
+        while (true) {
+            if (currentTile.getType().equals(Type.END)) {
+                return correctPath;
+            }
+            if (currentTile.getType().equals(Type.START)) {
+                if(getTileCoordinates(currentTile).getX()+ currentTile.getAccessibleNeighbors().get(0).getX() >=  0 )
+                if (!board[getTileCoordinates(currentTile).getX()+ currentTile.getAccessibleNeighbors().get(0).getX()][getTileCoordinates(currentTile).getY()+currentTile.getAccessibleNeighbors().get(0).getY()].getType().equals(Type.EMPTY)) {
+                        currentTile = board[currentTile.getAccessibleNeighbors().get(0).getX()][currentTile.getAccessibleNeighbors().get(0).getY()];
+                        previousTile = currentTile;
+
+                } else {
+                    return correctPath;
+                }
+            }
+            else if (board[currentTile.getAccessibleNeighbors().get(0).getX()][currentTile.getAccessibleNeighbors().get(0).getY()].getType().equals(Type.EMPTY)) {
+                return correctPath;
+            } else if (board[currentTile.getAccessibleNeighbors().get(1).getX()][currentTile.getAccessibleNeighbors().get(1).getY()].getType().equals(Type.EMPTY)) {
+                return correctPath;
+            } else {
+                if (1==1) {
+                    currentTile = board[currentTile.getAccessibleNeighbors().get(0).getX()][currentTile.getAccessibleNeighbors().get(0).getY()];
+                    previousTile = currentTile;
+                } else {
+                    return correctPath;
+                }
+            }
+
+        }
 
     }
+
+    public Node getTileCoordinates(Tile tile) {
+
+        for (int i = 0; i < this.board.length; i++) {
+            for (int j = 0; j < this.board[i].length; j++) {
+                if (this.board[i][j] == tile) {
+                    return new Node(i, j);
+                }
+            }
+        }
+        return null;
+    }
+
 }
