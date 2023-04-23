@@ -7,8 +7,9 @@ import java.awt.*;
 
 public class Pipes {
 
-    public static final String RESET_BUTTON_NAME= "RESET";
-    public static final String CHECK_BUTTON_NAME= "CHECK ROUTE";
+    public static final String RESET_BUTTON_NAME = "RESET";
+    public static final String CHECK_BUTTON_NAME = "CHECK ROUTE";
+
     public Pipes() {
         JFrame frame = new JFrame("Pipes");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

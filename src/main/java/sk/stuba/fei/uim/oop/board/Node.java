@@ -15,6 +15,7 @@ public class Node {
         this.x = x;
         this.y = y;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

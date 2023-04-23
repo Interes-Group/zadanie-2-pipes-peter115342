@@ -56,7 +56,6 @@ public class DfsPath {
         Collections.shuffle(neighbors, random);
 
 
-
         for (Node neighbor : neighbors) {
             boolean foundEnd = dfs(neighbor.getX(), neighbor.getY(), path);
             if (foundEnd) {
@@ -71,7 +70,7 @@ public class DfsPath {
     private List<Node> getUnvisitedNeighbors(int x, int y) {
         List<Node> neighbors = new ArrayList<>();
 
-        for( Direction dir : Direction.values()){
+        for (Direction dir : Direction.values()) {
             int neighborX = x + dir.getX();
             int neighborY = y + dir.getY();
 

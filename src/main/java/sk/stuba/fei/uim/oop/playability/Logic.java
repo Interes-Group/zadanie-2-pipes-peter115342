@@ -2,8 +2,10 @@ package sk.stuba.fei.uim.oop.playability;
 
 import lombok.Getter;
 import sk.stuba.fei.uim.oop.board.Board;
+import sk.stuba.fei.uim.oop.board.Checker;
 import sk.stuba.fei.uim.oop.gui.Pipes;
-import sk.stuba.fei.uim.oop.tiles.*;
+import sk.stuba.fei.uim.oop.tiles.Tile;
+import sk.stuba.fei.uim.oop.tiles.Type;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -11,7 +13,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-
 import java.util.List;
 
 public class Logic extends UniversalAdapter {
@@ -74,7 +75,8 @@ public class Logic extends UniversalAdapter {
     }
 
     private void win() {
-         List<Tile> correctPath = currentBoard.winPath();
+        Checker checker = new Checker(currentBoard);
+        List<Tile> correctPath = checker.winPath();
         for (Tile tile : correctPath) {
             currentBoard.getBoard()[tile.getCoordinates().getX()][tile.getCoordinates().getY()].setCheckActive(true);
         }

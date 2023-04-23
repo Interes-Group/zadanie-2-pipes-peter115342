@@ -16,7 +16,6 @@ import java.util.Random;
 public class Tile extends JPanel {
     @Getter
     private List<Node> accessibleNeighbors = new ArrayList<>();
-
     @Setter
     @Getter
     private boolean highlight;
@@ -25,14 +24,10 @@ public class Tile extends JPanel {
     @Getter
     @Setter
     private Type type;
-    @Getter
-    @Setter
-    private boolean playable;
     @Setter
     private int rotate;
     @Getter
     private Rotation rotation;
-
     @Getter
     @Setter
     private Boolean visited;
