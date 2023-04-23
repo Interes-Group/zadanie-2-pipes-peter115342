@@ -1,5 +1,6 @@
-package sk.stuba.fei.uim.oop.board;
+package sk.stuba.fei.uim.oop.utility;
 
+import sk.stuba.fei.uim.oop.board.Board;
 import sk.stuba.fei.uim.oop.tiles.Tile;
 import sk.stuba.fei.uim.oop.tiles.Type;
 
@@ -7,9 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
 public class Checker {
-private final Board board;
+    private final Board board;
 
     public Checker(Board board) {
         this.board = board;
@@ -83,10 +83,9 @@ private final Board board;
                         if (checkOutOfBounds(currentTile, board.getBoardSize())) {
                             if (checkEmpty(currentTile)) {
                                 board.getBoard()[currentTile.getCoordinates().getX()][currentTile.getCoordinates().getY()].setVisited(true);
-                                if(!board.getBoard()[currentTile.getAccessibleNeighbors().get(0).getX()][currentTile.getAccessibleNeighbors().get(0).getY()].getType().equals(Type.END) && !board.getBoard()[currentTile.getAccessibleNeighbors().get(1).getX()][currentTile.getAccessibleNeighbors().get(1).getY()].getType().equals(Type.END) ) {
+                                if (!board.getBoard()[currentTile.getAccessibleNeighbors().get(0).getX()][currentTile.getAccessibleNeighbors().get(0).getY()].getType().equals(Type.END) && !board.getBoard()[currentTile.getAccessibleNeighbors().get(1).getX()][currentTile.getAccessibleNeighbors().get(1).getY()].getType().equals(Type.END)) {
                                     nextTile = checkNext(currentTile);
-                                }
-                                else {
+                                } else {
                                     nextTile = board.getBoard()[currentTile.getAccessibleNeighbors().get(0).getX()][currentTile.getAccessibleNeighbors().get(0).getY()];
                                 }
                                 if (checkNeighbors(previousTile, currentTile, nextTile)) {
@@ -167,7 +166,7 @@ private final Board board;
 
         if (previousAccessNeighbors.contains(currentCoordinates)) {
             if (currentAccessibleNeighbors.contains(previousCoordinates) && currentAccessibleNeighbors.contains(nextCoordinates)) {
-                if(next.getType().equals(Type.END)){
+                if (next.getType().equals(Type.END)) {
                     return previousAccessNeighbors.contains(nextAccessNeighbors.get(0));
                 }
                 return previousAccessNeighbors.contains(nextAccessNeighbors.get(0)) || previousAccessNeighbors.contains(nextAccessNeighbors.get(1));

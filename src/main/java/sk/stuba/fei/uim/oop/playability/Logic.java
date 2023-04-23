@@ -2,7 +2,7 @@ package sk.stuba.fei.uim.oop.playability;
 
 import lombok.Getter;
 import sk.stuba.fei.uim.oop.board.Board;
-import sk.stuba.fei.uim.oop.board.Checker;
+import sk.stuba.fei.uim.oop.utility.Checker;
 import sk.stuba.fei.uim.oop.gui.Pipes;
 import sk.stuba.fei.uim.oop.tiles.Tile;
 import sk.stuba.fei.uim.oop.tiles.Type;
@@ -92,7 +92,6 @@ public class Logic extends UniversalAdapter {
             this.currentBoard.repaint();
 
         }
-
 
     }
 

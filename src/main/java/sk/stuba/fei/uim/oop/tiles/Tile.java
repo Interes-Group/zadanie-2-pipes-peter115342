@@ -3,7 +3,7 @@ package sk.stuba.fei.uim.oop.tiles;
 import lombok.Getter;
 import lombok.Setter;
 import sk.stuba.fei.uim.oop.board.Direction;
-import sk.stuba.fei.uim.oop.board.Node;
+import sk.stuba.fei.uim.oop.utility.Node;
 
 import javax.swing.*;
 import java.awt.*;

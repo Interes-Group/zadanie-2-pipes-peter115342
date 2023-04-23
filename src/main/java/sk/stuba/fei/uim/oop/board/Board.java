@@ -3,6 +3,8 @@ package sk.stuba.fei.uim.oop.board;
 import lombok.Getter;
 import sk.stuba.fei.uim.oop.tiles.Tile;
 import sk.stuba.fei.uim.oop.tiles.Type;
+import sk.stuba.fei.uim.oop.utility.DfsPath;
+import sk.stuba.fei.uim.oop.utility.Node;
 
 import javax.swing.*;
 import java.awt.*;

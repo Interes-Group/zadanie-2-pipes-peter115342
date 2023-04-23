@@ -1,4 +1,6 @@
-package sk.stuba.fei.uim.oop.board;
+package sk.stuba.fei.uim.oop.utility;
+
+import sk.stuba.fei.uim.oop.board.Direction;
 
 import java.util.ArrayList;
 import java.util.Collections;
