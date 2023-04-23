@@ -25,14 +25,10 @@ public class Tile extends JPanel {
     @Getter
     @Setter
     private Type type;
-    @Getter
-    @Setter
-    private boolean playable;
     @Setter
     private int rotate;
     @Getter
     private Rotation rotation;
-
     @Getter
     @Setter
     private  Boolean visited;
@@ -46,8 +42,7 @@ public class Tile extends JPanel {
     @Getter
     private Node coordinates;
 
-    public Tile(int x,int y ) {
-
+    public Tile(int x,int y) {
         this.type = Type.EMPTY;
         this.wasRotated = false;
         this.rotate = 0;
@@ -56,7 +51,6 @@ public class Tile extends JPanel {
         coordinates = new Node(x,y);
         checkActive = false;
         visited = false;
-
     }
 
     public void paintComponent(Graphics g) {
@@ -66,19 +60,34 @@ public class Tile extends JPanel {
         ((Graphics2D) g).transform(rotateTransform);
         if (!this.wasRotated) {
             if (rand.nextInt(4) == 1) {
-                rotate += 90;
-                checkRotation();
+                this.rotate  += 90;
+                if (rotate > 271) {
+                    rotate = 0;
+                }
+
             }
             if (rand.nextInt(4) == 2) {
-                rotate += 180;
-                checkRotation();
+                this.rotate  += 180;
+                if (rotate > 271) {
+                    rotate = 0;
+                }
             }
             if (rand.nextInt(4) == 3) {
-                rotate += 270;
-                checkRotation();
+                this.rotate  += 270;
+                if (rotate > 271) {
+                    rotate = 0;
+                }
+
             }
+            checkRotation();
+
             wasRotated = true;
         }
+        if (rotate > 271) {
+            rotate = 0;
+        }
+
+
         g.setColor(new Color(0, 120, 70));
 
 
@@ -120,7 +129,7 @@ public class Tile extends JPanel {
                         (int) (this.getWidth() * 0.2), (this.getHeight()));
             }
             checkActive = false;
-
+            //g.drawString(this.rotation.toString(),0,0);
         ((Graphics2D) g).setStroke(new BasicStroke(6));
         ((Graphics2D) g).setTransform(new AffineTransform());
 
@@ -132,23 +141,23 @@ public class Tile extends JPanel {
             g.setColor(new Color(128, 128, 128));
         }
         if (this.clicked) {
-            rotate += 90;
-            checkRotation();
-            if (rotate > 359) {
+            this.rotate += 90;
+            if (rotate > 271) {
                 rotate = 0;
             }
-
 
             this.setBorder(BorderFactory.createLineBorder(Color.red, 3));
 
             this.clicked = false;
+            checkRotation();
+
         }
-        checkRotation();
         changeAccessibleNeighbors();
 
     }
 
     private void drawRectangle(Graphics g) {
+        checkRotation();
         g.fillRect((0), (0), (this.getWidth()), (this.getHeight()));
         if (checkActive){
             g.setColor(new Color(0,0 , 255));
@@ -163,6 +172,7 @@ public class Tile extends JPanel {
 
 
     private void checkRotation() {
+
         if (this.rotate == 0) {
             if (this.type.equals(Type.I)) {
                 this.rotation = Rotation.UP_DOWN;
@@ -205,10 +215,12 @@ public class Tile extends JPanel {
             }
         }
 
+
     }
 
 
     private void changeAccessibleNeighbors() {
+        checkRotation();
         accessibleNeighbors.clear();
         if (this.type.equals(Type.I)) {
             if (this.rotation.equals(Rotation.LEFT_RIGHT)) {
@@ -246,6 +258,8 @@ public class Tile extends JPanel {
             }
 
         }
+        checkRotation();
+
     }
 
 }

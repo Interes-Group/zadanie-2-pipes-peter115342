@@ -81,7 +81,7 @@ public class Board extends JPanel {
         Tile previousTile = null;
         Tile nextTile = null;
         int neighborIndex = 0;
-        while (true) {
+        for (int i = 0; i < (this.size^2);i++){
             neighborIndex = 0;
             if (currentTile.getType().equals(Type.END)) {
                 correctPath.add(currentTile);
@@ -177,7 +177,8 @@ public class Board extends JPanel {
                 return correctPath;
             }
         }
-
+        resetVisited(correctPath);
+        return correctPath;
     }
 
 

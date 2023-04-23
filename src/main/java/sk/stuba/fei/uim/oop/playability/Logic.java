@@ -11,7 +11,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
+
 import java.util.List;
 
 public class Logic extends UniversalAdapter {
@@ -74,7 +74,7 @@ public class Logic extends UniversalAdapter {
     }
 
     private void win() {
-        List<Tile> correctPath = currentBoard.winPath();
+         List<Tile> correctPath = currentBoard.winPath();
         for (Tile tile : correctPath) {
             currentBoard.getBoard()[tile.getCoordinates().getX()][tile.getCoordinates().getY()].setCheckActive(true);
         }

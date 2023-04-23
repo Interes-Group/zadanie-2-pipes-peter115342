@@ -12,7 +12,7 @@ public class Pipes {
     public Pipes() {
         JFrame frame = new JFrame("Pipes");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(725, 725);
+        frame.setSize(725, 720);
         frame.getContentPane().setBackground(new Color(150, 150, 150));
         frame.setResizable(false);
         frame.setFocusable(true);
