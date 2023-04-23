@@ -11,6 +11,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Logic extends UniversalAdapter {
     public static final int STARTING_SIZE = 8;
@@ -23,21 +25,21 @@ public class Logic extends UniversalAdapter {
     @Getter
     private JLabel levelLabel;
     @Getter
-    private  JLabel sizeLabel;
+    private JLabel sizeLabel;
 
     private int currentSize;
 
 
-    public Logic(JFrame game){
-    this.game = game;
-    this.currentSize = STARTING_SIZE;
-    this.levelNumber = 1;
-    this.createNewBoard(this.currentSize);
-    this.game.add(this.currentBoard);
-    this.levelLabel = new JLabel();
-    this.sizeLabel = new JLabel();
-    this.updateBoardSizeLabel();
-    this.updateLevelLabel();
+    public Logic(JFrame game) {
+        this.game = game;
+        this.currentSize = STARTING_SIZE;
+        this.levelNumber = 1;
+        this.createNewBoard(this.currentSize);
+        this.game.add(this.currentBoard);
+        this.levelLabel = new JLabel();
+        this.sizeLabel = new JLabel();
+        this.updateBoardSizeLabel();
+        this.updateLevelLabel();
     }
 
     private void createNewBoard(int dimension) {
@@ -52,13 +54,14 @@ public class Logic extends UniversalAdapter {
         this.game.revalidate();
         this.game.repaint();
     }
+
     private void updateLevelLabel() {
         this.levelLabel.setText("LEVEL: " + this.levelNumber);
-         this.game.revalidate();
-         this.game.repaint();
+        this.game.revalidate();
+        this.game.repaint();
     }
 
-    private void restart(){
+    private void restart() {
         this.levelNumber = 1;
         this.game.remove(this.currentBoard);
         this.createNewBoard(this.currentSize);
@@ -66,10 +69,16 @@ public class Logic extends UniversalAdapter {
         this.updateLevelLabel();
         this.currentBoard.repaint();
         this.currentBoard.revalidate();
+
+
     }
 
-    private void  win(){
-        if(this.currentBoard.checkWin(currentBoard)){
+    private void win() {
+        List<Tile> correctPath = currentBoard.winPath();
+        for (Tile tile : correctPath) {
+            currentBoard.getBoard()[tile.getCoordinates().getX()][tile.getCoordinates().getY()].setCheckActive(true);
+        }
+        if (correctPath.get(correctPath.size() - 1).getType().equals(Type.END)) {
             this.levelNumber++;
             this.game.remove(this.currentBoard);
             this.createNewBoard(this.currentSize);
@@ -77,6 +86,9 @@ public class Logic extends UniversalAdapter {
             this.updateLevelLabel();
             this.currentBoard.repaint();
             this.currentBoard.revalidate();
+        } else {
+            this.currentBoard.repaint();
+
         }
 
 
@@ -96,6 +108,7 @@ public class Logic extends UniversalAdapter {
 
         }
     }
+
     @Override
     public void stateChanged(ChangeEvent e) {
         this.currentSize = ((JSlider) e.getSource()).getValue();
@@ -107,11 +120,11 @@ public class Logic extends UniversalAdapter {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        switch (e.getActionCommand()){
-            case(Pipes.RESET_BUTTON_NAME):
+        switch (e.getActionCommand()) {
+            case (Pipes.RESET_BUTTON_NAME):
                 this.restart();
                 break;
-            case(Pipes.CHECK_BUTTON_NAME):
+            case (Pipes.CHECK_BUTTON_NAME):
                 this.win();
                 break;
             default:
@@ -129,6 +142,7 @@ public class Logic extends UniversalAdapter {
 
         this.currentBoard.repaint();
     }
+
     @Override
     public void mouseMoved(MouseEvent e) {
         Component current = this.currentBoard.getComponentAt(e.getX(), e.getY());
@@ -136,7 +150,7 @@ public class Logic extends UniversalAdapter {
             this.currentBoard.repaint();
             return;
         }
-            ((Tile) current).setHighlight(true);
-       this.currentBoard.repaint();
+        ((Tile) current).setHighlight(true);
+        this.currentBoard.repaint();
     }
 }

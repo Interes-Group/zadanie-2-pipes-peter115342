@@ -5,5 +5,7 @@ public enum Type {
     I,
     START,
     END,
-    EMPTY
+    EMPTY,
+
+    WATER;
 }

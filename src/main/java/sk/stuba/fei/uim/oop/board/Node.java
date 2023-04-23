@@ -1,19 +1,26 @@
 package sk.stuba.fei.uim.oop.board;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class Node {
-    private final int x;
-    private final int y;
+    @Setter
+    @Getter
+    private int x;
+    @Setter
+    @Getter
+    private int y;
 
     public Node(int x, int y) {
         this.x = x;
         this.y = y;
     }
-
-    public int getX() {
-        return x;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Node node = (Node) o;
+        return x == node.x && y == node.y;
     }
 
-    public int getY() {
-        return y;
-    }
 }

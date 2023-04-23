@@ -1,7 +1,6 @@
 package sk.stuba.fei.uim.oop.board;
 
 import lombok.Getter;
-import sk.stuba.fei.uim.oop.tiles.Rotation;
 import sk.stuba.fei.uim.oop.tiles.Tile;
 import sk.stuba.fei.uim.oop.tiles.Type;
 
@@ -9,10 +8,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 
 public class Board extends JPanel {
+    @Getter
     private Tile[][] board;
     @Getter
     private boolean winFlag;
@@ -21,20 +20,23 @@ public class Board extends JPanel {
     @Getter
     private Node end;
 
+    private int size;
+
     public Board(int size) {
         this.initializeBoard(size);
         this.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
         this.setBackground(new Color(150, 150, 150));
         winFlag = false;
+        this.size = size;
 
     }
 
     private void initializeBoard(int dimension) {
         this.board = new Tile[dimension][dimension];
         this.setLayout(new GridLayout(dimension, dimension));
-        for (int i = 0; i < dimension; i++) {
-            for (int j = 0; j < dimension; j++) {
-                this.board[i][j] = new Tile();
+        for (int j = 0; j < dimension; j++) {
+            for (int i = 0; i < dimension; i++) {
+                this.board[i][j] = new Tile(i, j);
                 this.add(this.board[i][j]);
             }
         }
@@ -72,63 +74,160 @@ public class Board extends JPanel {
     }
 
 
-    public boolean checkWin(Board board) {
-        List<Tile> correctPath = winPath(board.start);
-        if (correctPath.get(correctPath.size() - 1).getType().equals(Type.END)) {
-            return winFlag;
-        } else {
-            return false;
-        }
-    }
-
-    public List<Tile> winPath(Node startingNode) {
+    public List<Tile> winPath() {
         List<Tile> correctPath = new ArrayList<>();
-        Tile currentTile = board[startingNode.getX()][startingNode.getY()];
+        Tile currentTile = board[start.getX()][start.getY()];
         correctPath.add(currentTile);
-        Tile previousTile = new Tile();
-        Tile nextTile = new Tile();
-        System.out.println(currentTile.getAccessibleNeighbors().get(0).getX()+" "+ currentTile.getAccessibleNeighbors().get(0).getY()); ;
+        Tile previousTile = null;
+        Tile nextTile = null;
+        int neighborIndex = 0;
         while (true) {
+            neighborIndex = 0;
             if (currentTile.getType().equals(Type.END)) {
+                correctPath.add(currentTile);
                 return correctPath;
             }
-            if (currentTile.getType().equals(Type.START)) {
-                if(getTileCoordinates(currentTile).getX()+ currentTile.getAccessibleNeighbors().get(0).getX() >=  0 )
-                if (!board[getTileCoordinates(currentTile).getX()+ currentTile.getAccessibleNeighbors().get(0).getX()][getTileCoordinates(currentTile).getY()+currentTile.getAccessibleNeighbors().get(0).getY()].getType().equals(Type.EMPTY)) {
-                        currentTile = board[currentTile.getAccessibleNeighbors().get(0).getX()][currentTile.getAccessibleNeighbors().get(0).getY()];
+            if (checkOutOfBounds(currentTile, this.size)) {
+                if (currentTile.getType().equals(Type.START)) {
+                    if (checkEmpty(currentTile)) {
                         previousTile = currentTile;
+                        board[currentTile.getCoordinates().getX()][currentTile.getCoordinates().getY()].setVisited(true);
+                        currentTile = board[previousTile.getAccessibleNeighbors().get(neighborIndex).getX()][previousTile.getAccessibleNeighbors().get(neighborIndex).getY()];
+                        if (checkOutOfBounds(currentTile, this.size)){
+                            if (checkEmpty(currentTile)) {
+                                board[currentTile.getCoordinates().getX()][currentTile.getCoordinates().getY()].setVisited(true);
+                                if ( board[currentTile.getAccessibleNeighbors().get(0).getX()][currentTile.getAccessibleNeighbors().get(0).getY()].getVisited() ) {
+                                    nextTile = board[currentTile.getAccessibleNeighbors().get(1).getX()][currentTile.getAccessibleNeighbors().get(1).getY()];
+                                }
+                                else {
+                                    nextTile = board[currentTile.getAccessibleNeighbors().get(0).getX()][currentTile.getAccessibleNeighbors().get(0).getY()];
+                                }
+                                if (checkNeighbors(previousTile, currentTile, nextTile)) {
+                                    correctPath.add(currentTile);
+                                } else {
+                                    resetVisited(correctPath);
 
-                } else {
-                    return correctPath;
+                                    return correctPath;
+                                }
+                            } else {
+                                resetVisited(correctPath);
+
+                                return correctPath;
+                            }
+                        }
+                        else{
+                            resetVisited(correctPath);
+
+                            return correctPath;
+                        }
+
+                    } else {
+                        resetVisited(correctPath);
+
+                        return correctPath;
+                    }
+                }  else {
+                    if (checkEmpty(currentTile)) {
+                        previousTile = currentTile;
+                        board[currentTile.getCoordinates().getX()][currentTile.getCoordinates().getY()].setVisited(true);
+                        if ( board[previousTile.getAccessibleNeighbors().get(neighborIndex).getX()][previousTile.getAccessibleNeighbors().get(neighborIndex).getY()].getVisited() ) {
+                            neighborIndex = 1;
+                        }
+                        currentTile = board[currentTile.getAccessibleNeighbors().get(neighborIndex).getX()][currentTile.getAccessibleNeighbors().get(neighborIndex).getY()];
+                        if (checkOutOfBounds(currentTile, this.size)){
+                            if (checkEmpty(currentTile)) {
+                                board[currentTile.getCoordinates().getX()][currentTile.getCoordinates().getY()].setVisited(true);
+                                if ( board[currentTile.getAccessibleNeighbors().get(0).getX()][currentTile.getAccessibleNeighbors().get(0).getY()].getVisited() ) {
+                                    if ( board[currentTile.getAccessibleNeighbors().get(1).getX()][currentTile.getAccessibleNeighbors().get(1).getY()].getType().equals(Type.END)){
+                                        correctPath.add(board[currentTile.getAccessibleNeighbors().get(1).getX()][currentTile.getAccessibleNeighbors().get(1).getY()]);
+                                        resetVisited(correctPath);
+                                        return correctPath;
+                                    }
+                                    else {
+                                        nextTile = board[currentTile.getAccessibleNeighbors().get(1).getX()][currentTile.getAccessibleNeighbors().get(1).getY()];
+                                    }
+                                }
+                                else {
+                                    nextTile = board[currentTile.getAccessibleNeighbors().get(0).getX()][currentTile.getAccessibleNeighbors().get(0).getY()];
+                                }
+
+                                if (checkNeighbors(previousTile, currentTile, nextTile)) {
+                                    correctPath.add(currentTile);
+                                } else {
+                                    resetVisited(correctPath);
+                                    return correctPath;
+                                }
+                            } else {
+                                resetVisited(correctPath);
+
+                                return correctPath;
+                            }
+                        }
+                        else{
+                            resetVisited(correctPath);
+
+                            return correctPath;
+                        }
+
+                    }
                 }
-            }
-            else if (board[currentTile.getAccessibleNeighbors().get(0).getX()][currentTile.getAccessibleNeighbors().get(0).getY()].getType().equals(Type.EMPTY)) {
-                return correctPath;
-            } else if (board[currentTile.getAccessibleNeighbors().get(1).getX()][currentTile.getAccessibleNeighbors().get(1).getY()].getType().equals(Type.EMPTY)) {
-                return correctPath;
+
             } else {
-                if (1==1) {
-                    currentTile = board[currentTile.getAccessibleNeighbors().get(0).getX()][currentTile.getAccessibleNeighbors().get(0).getY()];
-                    previousTile = currentTile;
-                } else {
-                    return correctPath;
-                }
+                resetVisited(correctPath);
+                return correctPath;
             }
-
         }
 
     }
 
-    public Node getTileCoordinates(Tile tile) {
 
-        for (int i = 0; i < this.board.length; i++) {
-            for (int j = 0; j < this.board[i].length; j++) {
-                if (this.board[i][j] == tile) {
-                    return new Node(i, j);
-                }
+    private boolean checkOutOfBounds(Tile currentTile, int dimension) {
+        int counter = 0;
+        for (int i = 0; i < currentTile.getAccessibleNeighbors().size(); i++) {
+            if (currentTile.getAccessibleNeighbors().get(i).getX() >= 0 &&
+                    currentTile.getAccessibleNeighbors().get(i).getX() < dimension &&
+                    currentTile.getAccessibleNeighbors().get(i).getY() >= 0 &&
+                    currentTile.getAccessibleNeighbors().get(i).getY() < dimension) {
+                counter++;
+            }
+
+        }
+        return counter == currentTile.getAccessibleNeighbors().size();
+    }
+
+    private boolean checkEmpty(Tile currentTile) {
+        int counter = 0;
+
+        for (int i = 0; i < currentTile.getAccessibleNeighbors().size(); i++) {
+            if (!board[currentTile.getAccessibleNeighbors().get(i).getX()][currentTile.getAccessibleNeighbors().get(i).getY()].getType().equals(Type.EMPTY)) {
+                counter++;
             }
         }
-        return null;
+        return counter == currentTile.getAccessibleNeighbors().size();
+    }
+
+    public boolean checkNeighbors(Tile previous, Tile current, Tile next) {
+        List<Node> previousAccessNeighbors = previous.getAccessibleNeighbors();
+        List<Node> currentAccessibleNeighbors = current.getAccessibleNeighbors();
+        List<Node> nextAccessNeighbors = next.getAccessibleNeighbors();
+        Node currentCoordinates = current.getCoordinates();
+        Node  previousCoordinates = previous.getCoordinates();
+        Node nextCoordinates = next.getCoordinates();
+
+
+        if (previousAccessNeighbors.contains(currentCoordinates) ) {
+            if (currentAccessibleNeighbors.contains(previousCoordinates) && currentAccessibleNeighbors.contains(nextCoordinates)) {
+                return previousAccessNeighbors.contains(nextAccessNeighbors.get(0)) || previousAccessNeighbors.contains(nextAccessNeighbors.get(1));
+            }
+        }
+        return false;
+    }
+
+
+    private void resetVisited(List<Tile> correctPath){
+        for (Tile tile : correctPath){
+            board[tile.getCoordinates().getX()][tile.getCoordinates().getY()].setVisited(false);
+        }
     }
 
 }
