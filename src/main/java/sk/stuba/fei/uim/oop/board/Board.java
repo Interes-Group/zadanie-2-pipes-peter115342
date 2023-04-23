@@ -24,7 +24,7 @@ public class Board extends JPanel {
 
     public Board(int size) {
         this.initializeBoard(size);
-        this.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
+        this.setBorder(BorderFactory.createEmptyBorder(88, 88, 88, 88));
         this.setBackground(new Color(150, 150, 150));
         winFlag = false;
         this.size = size;
@@ -78,11 +78,9 @@ public class Board extends JPanel {
         List<Tile> correctPath = new ArrayList<>();
         Tile currentTile = board[start.getX()][start.getY()];
         correctPath.add(currentTile);
-        Tile previousTile = null;
-        Tile nextTile = null;
-        int neighborIndex = 0;
-        for (int i = 0; i < (this.size^2);i++){
-            neighborIndex = 0;
+        Tile previousTile;
+        Tile nextTile;
+        for (int i = 0; i < (this.size*this.size);i++){
             if (currentTile.getType().equals(Type.END)) {
                 correctPath.add(currentTile);
                 return correctPath;
@@ -92,7 +90,7 @@ public class Board extends JPanel {
                     if (checkEmpty(currentTile)) {
                         previousTile = currentTile;
                         board[currentTile.getCoordinates().getX()][currentTile.getCoordinates().getY()].setVisited(true);
-                        currentTile = board[previousTile.getAccessibleNeighbors().get(neighborIndex).getX()][previousTile.getAccessibleNeighbors().get(neighborIndex).getY()];
+                        currentTile = board[previousTile.getAccessibleNeighbors().get(0).getX()][previousTile.getAccessibleNeighbors().get(0).getY()];
                         if (checkOutOfBounds(currentTile, this.size)){
                             if (checkEmpty(currentTile)) {
                                 board[currentTile.getCoordinates().getX()][currentTile.getCoordinates().getY()].setVisited(true);
@@ -103,26 +101,29 @@ public class Board extends JPanel {
                                     nextTile = board[currentTile.getAccessibleNeighbors().get(0).getX()][currentTile.getAccessibleNeighbors().get(0).getY()];
                                 }
                                 if (checkNeighbors(previousTile, currentTile, nextTile)) {
+                                    if (currentTile.getType().equals(Type.END)){
+                                        correctPath.add(currentTile);
+                                        resetVisited(this.size);
+                                        return correctPath;
+                                    }
                                     correctPath.add(currentTile);
                                 } else {
-                                    resetVisited(correctPath);
-
+                                    resetVisited(this.size);
                                     return correctPath;
                                 }
                             } else {
-                                resetVisited(correctPath);
+                                resetVisited(this.size);
 
                                 return correctPath;
                             }
                         }
                         else{
-                            resetVisited(correctPath);
+                            resetVisited(this.size);
 
                             return correctPath;
                         }
-
                     } else {
-                        resetVisited(correctPath);
+                        resetVisited(this.size);
 
                         return correctPath;
                     }
@@ -130,22 +131,27 @@ public class Board extends JPanel {
                     if (checkEmpty(currentTile)) {
                         previousTile = currentTile;
                         board[currentTile.getCoordinates().getX()][currentTile.getCoordinates().getY()].setVisited(true);
-                        if ( board[previousTile.getAccessibleNeighbors().get(neighborIndex).getX()][previousTile.getAccessibleNeighbors().get(neighborIndex).getY()].getVisited() ) {
-                            neighborIndex = 1;
+                        if ( board[previousTile.getAccessibleNeighbors().get(0).getX()][previousTile.getAccessibleNeighbors().get(0).getY()].getVisited() ) {
+                            currentTile = board[currentTile.getAccessibleNeighbors().get(1).getX()][currentTile.getAccessibleNeighbors().get(1).getY()];
                         }
-                        currentTile = board[currentTile.getAccessibleNeighbors().get(neighborIndex).getX()][currentTile.getAccessibleNeighbors().get(neighborIndex).getY()];
+                        else {
+                            currentTile = board[currentTile.getAccessibleNeighbors().get(0).getX()][currentTile.getAccessibleNeighbors().get(0).getY()];
+                        }
+                        if(currentTile.getType().equals(Type.END)){
+                            if(checkNeighborsEnd( previousTile, currentTile)){
+                                correctPath.add(currentTile);
+                                resetVisited(this.size);
+                                return correctPath;
+                            }
+                            resetVisited(this.size);
+                            return correctPath;
+                        }
                         if (checkOutOfBounds(currentTile, this.size)){
                             if (checkEmpty(currentTile)) {
                                 board[currentTile.getCoordinates().getX()][currentTile.getCoordinates().getY()].setVisited(true);
+
                                 if ( board[currentTile.getAccessibleNeighbors().get(0).getX()][currentTile.getAccessibleNeighbors().get(0).getY()].getVisited() ) {
-                                    if ( board[currentTile.getAccessibleNeighbors().get(1).getX()][currentTile.getAccessibleNeighbors().get(1).getY()].getType().equals(Type.END)){
-                                        correctPath.add(board[currentTile.getAccessibleNeighbors().get(1).getX()][currentTile.getAccessibleNeighbors().get(1).getY()]);
-                                        resetVisited(correctPath);
-                                        return correctPath;
-                                    }
-                                    else {
-                                        nextTile = board[currentTile.getAccessibleNeighbors().get(1).getX()][currentTile.getAccessibleNeighbors().get(1).getY()];
-                                    }
+                                    nextTile = board[currentTile.getAccessibleNeighbors().get(1).getX()][currentTile.getAccessibleNeighbors().get(1).getY()];
                                 }
                                 else {
                                     nextTile = board[currentTile.getAccessibleNeighbors().get(0).getX()][currentTile.getAccessibleNeighbors().get(0).getY()];
@@ -154,30 +160,26 @@ public class Board extends JPanel {
                                 if (checkNeighbors(previousTile, currentTile, nextTile)) {
                                     correctPath.add(currentTile);
                                 } else {
-                                    resetVisited(correctPath);
+                                    resetVisited(this.size);
                                     return correctPath;
                                 }
                             } else {
-                                resetVisited(correctPath);
-
+                                resetVisited(this.size);
                                 return correctPath;
                             }
                         }
                         else{
-                            resetVisited(correctPath);
-
+                            resetVisited(this.size);
                             return correctPath;
                         }
-
                     }
                 }
-
             } else {
-                resetVisited(correctPath);
+                resetVisited(this.size);
                 return correctPath;
             }
         }
-        resetVisited(correctPath);
+        resetVisited(this.size);
         return correctPath;
     }
 
@@ -223,12 +225,26 @@ public class Board extends JPanel {
         }
         return false;
     }
+    public boolean checkNeighborsEnd(Tile previous, Tile current) {
+        List<Node> previousAccessNeighbors = previous.getAccessibleNeighbors();
+        List<Node> currentAccessibleNeighbors = current.getAccessibleNeighbors();
+        Node currentCoordinates = current.getCoordinates();
+        Node  previousCoordinates = previous.getCoordinates();
 
 
-    private void resetVisited(List<Tile> correctPath){
-        for (Tile tile : correctPath){
-            board[tile.getCoordinates().getX()][tile.getCoordinates().getY()].setVisited(false);
+        if (previousAccessNeighbors.contains(currentCoordinates) ) {
+            return currentAccessibleNeighbors.contains(previousCoordinates);
         }
+        return false;
     }
 
+
+
+    private void resetVisited(int dimension) {
+        for (int i = 0; i < dimension; i++) {
+            for (int j = 0; j < dimension; j++) {
+                board[i][j].setVisited(false);
+            }
+        }
+    }
 }
